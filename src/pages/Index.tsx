@@ -1,7 +1,7 @@
 import React from 'react';
 import GiftCard from '@/components/GiftCard';
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
@@ -9,35 +9,53 @@ const Index = () => {
   const giftTypes = [
     {
       type: 'video',
-      title: 'Video Message',
-      description: 'Send a heartfelt video message with AI-suggested script',
+      title: 'Heartfelt Video',
+      description: 'Create a personalized video message with AI-suggested script and your voice recording',
       price: 10
     },
     {
       type: 'card',
-      title: 'Digital Card',
-      description: 'Create a beautiful digital card with AI-generated design',
+      title: 'Magic Card',
+      description: 'Send an AI-designed digital card that captures your unique relationship',
       price: 5
     },
     {
-      type: 'icon',
-      title: 'Digital Icons',
-      description: 'Send meaningful digital icons like roses and hearts',
+      type: 'charm',
+      title: 'Enchanted Charms',
+      description: 'Share meaningful digital charms that symbolize your special bond',
       price: 5
     },
     {
       type: 'voucher',
-      title: 'Gift Voucher',
-      description: 'Send a gift voucher that can be redeemed',
-      price: 50
+      title: 'Magic Voucher',
+      description: 'Send a custom amount gift voucher that brings joy to your loved ones',
+      price: 20
     }
   ];
 
   const handleGiftSelect = (type: string) => {
     toast({
-      title: "Coming Soon!",
-      description: "This feature will be available soon. Stay tuned!",
+      title: "Gift Flow Started!",
+      description: `Follow these steps to send your ${type}:
+        ${getGiftSteps(type)}`,
     });
+  };
+
+  const getGiftSteps = (type: string) => {
+    const commonSteps = "1. Enter recipient's phone number\n2. Share your relationship\n3. Write your message";
+    
+    switch(type) {
+      case 'video':
+        return `${commonSteps}\n4. Record your voice or use AI voice\n5. Preview and customize\n6. Complete payment`;
+      case 'card':
+        return `${commonSteps}\n4. Choose card theme\n5. Preview AI design\n6. Complete payment`;
+      case 'charm':
+        return `${commonSteps}\n4. Select meaningful charms\n5. Arrange your design\n6. Complete payment`;
+      case 'voucher':
+        return `${commonSteps}\n4. Enter custom amount (min $20)\n5. Add special note\n6. Complete payment`;
+      default:
+        return commonSteps;
+    }
   };
 
   return (

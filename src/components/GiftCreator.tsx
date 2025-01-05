@@ -3,20 +3,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Gift, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface GiftCreatorProps {
-  type: 'video' | 'card' | 'icon' | 'voucher';
+  type: 'video' | 'card' | 'charm' | 'voucher';
   onSubmit: (data: any) => void;
 }
 
 const GiftCreator = ({ type, onSubmit }: GiftCreatorProps) => {
+  const { toast } = useToast();
   const [recipient, setRecipient] = useState('');
   const [relationship, setRelationship] = useState('');
   const [message, setMessage] = useState('');
-  const [amount, setAmount] = useState(5);
+  const [amount, setAmount] = useState(20);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (type === 'voucher' && amount < 20) {
+      toast({
+        title: "Invalid Amount",
+        description: "Voucher amount must be at least $20",
+        variant: "destructive"
+      });
+      return;
+    }
     onSubmit({ recipient, relationship, message, amount });
   };
 
@@ -55,13 +65,14 @@ const GiftCreator = ({ type, onSubmit }: GiftCreatorProps) => {
 
       {type === 'voucher' && (
         <div className="space-y-2">
-          <label className="text-sm font-medium">Amount (${amount})</label>
+          <label className="text-sm font-medium">Amount (Min: $20)</label>
           <Input
-            type="range"
-            min="5"
-            max="50"
+            type="number"
+            min="20"
+            max="3000"
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
+            className="w-full"
           />
         </div>
       )}

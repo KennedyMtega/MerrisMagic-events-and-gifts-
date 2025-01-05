@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { Gift, Heart, MessageCircle } from "lucide-react";
+import { Gift, Heart, MessageCircle, Sparkles } from "lucide-react";
 
 interface GiftCardProps {
-  type: 'video' | 'card' | 'icon' | 'voucher';
+  type: 'video' | 'card' | 'charm' | 'voucher';
   title: string;
   description: string;
   price: number;
@@ -14,7 +14,7 @@ const GiftCard = ({ type, title, description, price, onClick }: GiftCardProps) =
   const icons = {
     video: <MessageCircle className="w-6 h-6 text-gift" />,
     card: <Gift className="w-6 h-6 text-gift" />,
-    icon: <Heart className="w-6 h-6 text-gift" />,
+    charm: <Sparkles className="w-6 h-6 text-gift" />,
     voucher: <Gift className="w-6 h-6 text-gift" />
   };
 
@@ -26,7 +26,12 @@ const GiftCard = ({ type, title, description, price, onClick }: GiftCardProps) =
       <div className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           {icons[type]}
-          <span className="text-sm font-semibold text-gift">${price}</span>
+          {type !== 'voucher' && (
+            <span className="text-sm font-semibold text-gift">${price}</span>
+          )}
+          {type === 'voucher' && (
+            <span className="text-sm font-semibold text-gift">Custom</span>
+          )}
         </div>
         <h3 className="text-xl font-bold">{title}</h3>
         <p className="text-sm text-gray-600">{description}</p>
