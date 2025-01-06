@@ -59,6 +59,8 @@ const Landing = () => {
                 },
               }}
               providers={[]}
+              view="phone_sign_in"
+              showLinks={false}
               redirectTo={window.location.origin + '/dashboard'}
             />
           </DialogContent>
