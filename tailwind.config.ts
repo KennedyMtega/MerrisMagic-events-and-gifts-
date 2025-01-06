@@ -63,11 +63,28 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
         },
+        "fade-in": {
+          "0%": { 
+            opacity: "0",
+            transform: "translateY(20px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)"
+          }
+        }
       },
       animation: {
         "gift-bounce": "gift-bounce 2s ease-in-out infinite",
         "gift-wrap": "gift-wrap 0.5s ease-out forwards",
         "sparkle": "sparkle 1.5s ease-in-out infinite",
+        "fade-in": "fade-in 0.5s ease-out"
+      },
+      perspective: {
+        '1000': '1000px',
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
       },
     },
   },
