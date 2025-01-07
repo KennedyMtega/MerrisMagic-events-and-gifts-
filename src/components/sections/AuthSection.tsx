@@ -42,8 +42,7 @@ export const AuthSection = () => {
             },
           }}
           providers={[]}
-          view="sign_in"
-          otherMethods={['phone']}
+          view="phone_sign_in"
           showLinks={false}
         />
       </DialogContent>
