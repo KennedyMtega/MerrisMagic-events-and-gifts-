@@ -25,11 +25,11 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#FF69B4", // Hot pink
+          DEFAULT: "#FF69B4",
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#FFB6C1", // Light pink
+          DEFAULT: "#FFB6C1",
           foreground: "#000000",
         },
         destructive: {
@@ -41,13 +41,13 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#FFD700", // Gold
+          DEFAULT: "#FFD700",
           foreground: "#000000",
         },
         gift: {
-          DEFAULT: "#FF1493", // Deep pink
-          light: "#FFB6C1",   // Light pink
-          dark: "#C71585",    // Medium violet red
+          DEFAULT: "#FF1493",
+          light: "#FFB6C1",
+          dark: "#C71585",
         },
       },
       keyframes: {
@@ -72,19 +72,28 @@ export default {
             opacity: "1",
             transform: "translateY(0)"
           }
+        },
+        blob: {
+          "0%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+          "33%": {
+            transform: "translate(30px, -50px) scale(1.1)",
+          },
+          "66%": {
+            transform: "translate(-20px, 20px) scale(0.9)",
+          },
+          "100%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
         }
       },
       animation: {
         "gift-bounce": "gift-bounce 2s ease-in-out infinite",
         "gift-wrap": "gift-wrap 0.5s ease-out forwards",
         "sparkle": "sparkle 1.5s ease-in-out infinite",
-        "fade-in": "fade-in 0.5s ease-out"
-      },
-      perspective: {
-        '1000': '1000px',
-      },
-      transformStyle: {
-        '3d': 'preserve-3d',
+        "fade-in": "fade-in 0.5s ease-out",
+        "blob": "blob 7s infinite",
       },
     },
   },
