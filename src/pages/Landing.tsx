@@ -12,9 +12,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { AuthSection } from '@/components/sections/AuthSection';
 
 const Landing = () => {
   const navigate = useNavigate();
+  const [isAuthOpen, setIsAuthOpen] = React.useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -26,15 +28,19 @@ const Landing = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const handleAuthTrigger = () => {
+    setIsAuthOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gift">Merris Magic</h1>
-        <Dialog>
+        <Dialog open={isAuthOpen} onOpenChange={setIsAuthOpen}>
           <DialogTrigger asChild>
             <Button className="bg-gift hover:bg-gift-dark text-white">
-              Get Started
+              Start Your Gifting Journey
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
@@ -44,25 +50,7 @@ const Landing = () => {
                 Join our magical community to start sending heartfelt digital gifts
               </DialogDescription>
             </DialogHeader>
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ 
-                theme: ThemeSupa,
-                style: {
-                  button: {
-                    background: '#FF69B4',
-                    color: 'white',
-                  },
-                  anchor: {
-                    color: '#FF69B4',
-                  },
-                },
-              }}
-              providers={[]}
-              view="sign_in"
-              showLinks={false}
-              redirectTo={window.location.origin + '/dashboard'}
-            />
+            <AuthSection />
           </DialogContent>
         </Dialog>
       </nav>
@@ -71,17 +59,19 @@ const Landing = () => {
       <div className="container mx-auto px-4">
         <section className="py-20 text-center">
           <h2 className="text-6xl font-bold text-gift mb-8">
-            Share Joy Around The World 🎁
+            Create Magical Moments with Personal Digital Gifts 🎁
           </h2>
           <p className="text-xl text-gray-600 mb-12">
-            Adventures of gifting are only a few taps away
+            Transform your heartfelt messages into unforgettable digital experiences
           </p>
-          <Button className="bg-gift hover:bg-gift-dark text-white px-8 py-6 rounded-full text-lg">
-            Join Us
+          <Button 
+            onClick={handleAuthTrigger}
+            className="bg-gift hover:bg-gift-dark text-white px-8 py-6 rounded-full text-lg animate-pulse"
+          >
+            Begin Your Magical Journey Today
           </Button>
         </section>
 
-        {/* Trending Gifts Section */}
         <section className="py-16">
           <h2 className="text-4xl font-bold mb-8">
             Trending 📸 Gifts
@@ -103,7 +93,6 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Gift Packages Section */}
         <section className="py-16 bg-white/50 rounded-3xl p-8">
           <h2 className="text-4xl font-bold mb-8">
             Choose your range of expertly crafted gifts
@@ -131,7 +120,6 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Popular Gift Categories */}
         <section className="py-16">
           <h2 className="text-4xl font-bold mb-8">
             Popular 🎁 Gift Categories
@@ -156,7 +144,6 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
         <section className="py-16 bg-white/50 rounded-3xl p-8">
           <h2 className="text-4xl font-bold mb-8">
             Real Gift Stories from Real People
@@ -196,10 +183,13 @@ const Landing = () => {
         {/* CTA Section */}
         <section className="py-20 text-center bg-gradient-to-br from-gift to-gift-dark text-white rounded-3xl mb-16">
           <h2 className="text-4xl font-bold mb-6">
-            GET READY TO SHARE YOUR MAGICAL GIFTS
+            START CREATING MAGICAL MOMENTS TODAY
           </h2>
-          <Button className="bg-white text-gift hover:bg-gray-100 px-8 py-6 rounded-full text-lg">
-            Start Gifting Now
+          <Button 
+            onClick={handleAuthTrigger}
+            className="bg-white text-gift hover:bg-gray-100 px-8 py-6 rounded-full text-lg"
+          >
+            Transform Your Gift Ideas Into Reality
           </Button>
         </section>
       </div>
