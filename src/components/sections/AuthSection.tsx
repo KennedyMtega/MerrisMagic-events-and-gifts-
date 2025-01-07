@@ -21,7 +21,6 @@ export const AuthSection = () => {
       }}
       providers={[]}
       view="sign_in"
-      otherMethods={['phone']}
       showLinks={true}
       redirectTo={window.location.origin + '/dashboard'}
     />
