@@ -59,7 +59,7 @@ const Landing = () => {
                 },
               }}
               providers={[]}
-              view="phone_sign_in"
+              view="sign_in"
               showLinks={false}
               redirectTo={window.location.origin + '/dashboard'}
             />
@@ -67,119 +67,142 @@ const Landing = () => {
         </Dialog>
       </nav>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-6xl font-bold text-gift mb-8 animate-fade-in">
-            Share Joy Through Digital Magic
+      {/* Main Content */}
+      <div className="container mx-auto px-4">
+        <section className="py-20 text-center">
+          <h2 className="text-6xl font-bold text-gift mb-8">
+            Share Joy Around The World 🎁
           </h2>
-          <p className="text-2xl text-gray-600 mb-12 animate-fade-in delay-200">
-            Create unforgettable moments with personalized digital gifts that touch hearts and spark smiles
+          <p className="text-xl text-gray-600 mb-12">
+            Adventures of gifting are only a few taps away
           </p>
-        </div>
-      </section>
+          <Button className="bg-gift hover:bg-gift-dark text-white px-8 py-6 rounded-full text-lg">
+            Join Us
+          </Button>
+        </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-20 bg-white/50">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {[
-            {
-              title: "Heartfelt Videos",
-              description: "Create personalized video messages enhanced with AI magic that capture your genuine emotions",
-              animation: "fade-in"
-            },
-            {
-              title: "Magic Cards",
-              description: "Send beautifully designed digital cards that transform into magical experiences",
-              animation: "fade-in delay-200"
-            },
-            {
-              title: "Digital Charms",
-              description: "Share meaningful digital charms that symbolize your special connection",
-              animation: "fade-in delay-400"
-            }
-          ].map((feature, index) => (
-            <div 
-              key={index}
-              className={`p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow animate-${feature.animation}`}
-            >
-              <h3 className="text-2xl font-semibold text-gift mb-4">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold text-center text-gift mb-16">How Merris Magic Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {[
-            {
-              step: "1",
-              title: "Choose Your Gift",
-              description: "Select from our magical collection of digital gifts"
-            },
-            {
-              step: "2",
-              title: "Personalize",
-              description: "Add your personal touch with messages and customizations"
-            },
-            {
-              step: "3",
-              title: "Enhance with AI",
-              description: "Let our AI magic enhance your gift's presentation"
-            },
-            {
-              step: "4",
-              title: "Share the Joy",
-              description: "Send your magical gift to your loved ones"
-            }
-          ].map((step, index) => (
-            <div 
-              key={index}
-              className="text-center p-6 animate-fade-in"
-              style={{ animationDelay: `${index * 200}ms` }}
-            >
-              <div className="w-12 h-12 bg-gift text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                {step.step}
+        {/* Trending Gifts Section */}
+        <section className="py-16">
+          <h2 className="text-4xl font-bold mb-8">
+            Trending 📸 Gifts
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+              { title: "Video Messages", image: "/placeholder.svg" },
+              { title: "Magic Cards", image: "/placeholder.svg" },
+              { title: "Digital Charms", image: "/placeholder.svg" },
+              { title: "Gift Vouchers", image: "/placeholder.svg" }
+            ].map((item, index) => (
+              <div key={index} className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gift mb-2">{step.title}</h3>
-              <p className="text-gray-600">{step.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
 
-      {/* Testimonials Section */}
-      <section className="container mx-auto px-4 py-20 bg-white/50">
-        <h2 className="text-4xl font-bold text-center text-gift mb-16">Magical Moments Shared</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              quote: "The digital charm bracelet I sent my sister was perfect! She loved how personal it felt.",
-              author: "Sarah M."
-            },
-            {
-              quote: "Creating an AI-enhanced video message for my mom's birthday was incredibly special.",
-              author: "Michael R."
-            },
-            {
-              quote: "The magic cards are beautiful! They make every occasion feel extra special.",
-              author: "Emma L."
-            }
-          ].map((testimonial, index) => (
-            <div 
-              key={index}
-              className="p-6 bg-white rounded-xl shadow-lg animate-fade-in"
-              style={{ animationDelay: `${index * 200}ms` }}
-            >
-              <p className="text-gray-600 italic mb-4">{testimonial.quote}</p>
-              <p className="text-gift font-semibold">{testimonial.author}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        {/* Gift Packages Section */}
+        <section className="py-16 bg-white/50 rounded-3xl p-8">
+          <h2 className="text-4xl font-bold mb-8">
+            Choose your range of expertly crafted gifts
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Browse carefully crafted gift packages tailored for your special moments and celebrations
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: "Birthday Bundle", price: "$29.99", rating: "4.8" },
+              { title: "Anniversary Magic", price: "$39.99", rating: "4.9" },
+              { title: "Celebration Pack", price: "$49.99", rating: "4.7" }
+            ].map((package_, index) => (
+              <div key={index} className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <img src="/placeholder.svg" alt={package_.title} className="w-full h-48 object-cover" />
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold">{package_.title}</h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <span>Starting at {package_.price}</span>
+                    <span>⭐ {package_.rating}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Popular Gift Categories */}
+        <section className="py-16">
+          <h2 className="text-4xl font-bold mb-8">
+            Popular 🎁 Gift Categories
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                title: "Digital Love Letters",
+                description: "Send heartfelt messages enhanced with AI magic that capture your genuine emotions perfectly."
+              },
+              {
+                title: "Celebration Bundles",
+                description: "Curated gift packages that combine multiple digital surprises for maximum joy."
+              }
+            ].map((category, index) => (
+              <div key={index} className="rounded-2xl overflow-hidden shadow-lg p-6 bg-white">
+                <img src="/placeholder.svg" alt={category.title} className="w-full h-64 object-cover rounded-xl mb-4" />
+                <h3 className="text-2xl font-bold mb-2">{category.title}</h3>
+                <p className="text-gray-600">{category.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-16 bg-white/50 rounded-3xl p-8">
+          <h2 className="text-4xl font-bold mb-8">
+            Real Gift Stories from Real People
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Williams",
+                rating: "4.9",
+                story: "The digital charm bracelet I created for my sister's birthday was absolutely perfect! The AI suggestions really helped make it special."
+              },
+              {
+                name: "Michael Chen",
+                rating: "5.0",
+                story: "I was able to send a beautiful anniversary package to my parents. The video message feature with background music was amazing!"
+              },
+              {
+                name: "Emma Thompson",
+                rating: "4.8",
+                story: "The celebration bundle made my friend's day! The combination of digital cards and custom messages was exactly what I needed."
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gift rounded-full mr-4"></div>
+                  <div>
+                    <h3 className="font-semibold">{testimonial.name}</h3>
+                    <div className="text-gift">⭐ {testimonial.rating}</div>
+                  </div>
+                </div>
+                <p className="text-gray-600">{testimonial.story}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20 text-center bg-gradient-to-br from-gift to-gift-dark text-white rounded-3xl mb-16">
+          <h2 className="text-4xl font-bold mb-6">
+            GET READY TO SHARE YOUR MAGICAL GIFTS
+          </h2>
+          <Button className="bg-white text-gift hover:bg-gray-100 px-8 py-6 rounded-full text-lg">
+            Start Gifting Now
+          </Button>
+        </section>
+      </div>
     </div>
   );
 };
