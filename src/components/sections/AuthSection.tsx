@@ -49,15 +49,20 @@ export const AuthSection = () => {
   // Helper function to check if email exists
   const checkEmailExists = async (originalError: AuthError) => {
     try {
-      // We'll use a sign-in attempt to check if the email exists
+      const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
+      const email = emailInput?.value || '';
+      
+      // First check if the email exists using passwordless sign in
       const { error: signInError } = await supabase.auth.signInWithOtp({
-        email: (document.querySelector('input[type="email"]') as HTMLInputElement)?.value || '',
+        email: email,
       });
       
       if (signInError) {
-        if (signInError.message.includes('Email not found')) {
+        if (signInError.message.includes('Email not found') || 
+            signInError.message.includes('Unable to validate email address')) {
           setError('This email is not registered. Please sign up first.');
         } else {
+          // If we get here, the email exists but the password was wrong
           setError('Invalid password. Please try again.');
         }
       }
@@ -94,6 +99,7 @@ export const AuthSection = () => {
         view="sign_in"
         showLinks={true}
         redirectTo={window.location.origin + '/dashboard'}
+        onError={handleAuthError}
       />
     </div>
   );
