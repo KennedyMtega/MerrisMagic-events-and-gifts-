@@ -8,6 +8,7 @@ import { Session } from "@supabase/supabase-js";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import VideoGift from "./pages/VideoGift";
+import VideoGiftFlow from "./components/VideoGiftFlow";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <VideoGift />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gift/video/create"
+            element={
+              <ProtectedRoute>
+                <VideoGiftFlow />
               </ProtectedRoute>
             }
           />

@@ -1,48 +1,45 @@
-import React, { useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthError, AuthApiError } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { AuthError } from '@supabase/supabase-js';
+import { useToast } from '@/hooks/use-toast';
 
 export const AuthSection = () => {
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN') {
-        setError(null);
-      }
-      if (event === 'SIGNED_OUT') {
-        setError(null);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/dashboard');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
-  // Enhanced error handling function
-  const handleAuthError = (err: AuthError) => {
-    if (err instanceof AuthApiError) {
-      switch (err.status) {
-        case 400:
-          if (err.message.includes('Email not confirmed')) {
-            setError('Please verify your email address before signing in.');
-          } else if (err.message.includes('Invalid login credentials')) {
-            // Check if the email exists first
-            checkEmailExists(err);
-          } else {
-            setError(err.message);
-          }
-          break;
-        case 422:
-          setError('Invalid email format. Please check your email address.');
-          break;
-        default:
-          setError('An error occurred during authentication. Please try again.');
-      }
+  const handleAuthError = async (error: AuthError) => {
+    if (error.message.includes('Invalid login credentials')) {
+      await checkEmailExists(error);
+    } else if (error.message.includes('Email not confirmed')) {
+      setError('Please verify your email address before signing in.');
+    } else if (error.message.includes('Invalid email')) {
+      setError('Invalid email format. Please check your email address.');
     } else {
-      setError(err.message);
+      setError(error.message);
+    }
+
+    if (error) {
+      toast({
+        title: "Authentication Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -52,7 +49,6 @@ export const AuthSection = () => {
       const emailInput = document.querySelector('input[type="email"]') as HTMLInputElement;
       const email = emailInput?.value || '';
       
-      // First check if the email exists using passwordless sign in
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email: email,
       });
@@ -62,44 +58,29 @@ export const AuthSection = () => {
             signInError.message.includes('Unable to validate email address')) {
           setError('This email is not registered. Please sign up first.');
         } else {
-          // If we get here, the email exists but the password was wrong
           setError('Invalid password. Please try again.');
         }
       }
-    } catch {
-      setError('Invalid password. Please try again.');
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     }
   };
 
   return (
-    <div className="space-y-4">
+    <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center mb-6 text-gift">Welcome to Merris Magic</h2>
       {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
       )}
       <Auth
         supabaseClient={supabase}
-        appearance={{ 
-          theme: ThemeSupa,
-          style: {
-            button: {
-              background: '#FF69B4',
-              color: 'white',
-            },
-            anchor: {
-              color: '#FF69B4',
-            },
-            message: {
-              color: 'red',
-            },
-          },
-        }}
+        appearance={{ theme: ThemeSupa }}
         providers={[]}
         view="sign_in"
         showLinks={true}
         redirectTo={window.location.origin + '/dashboard'}
-        onError={handleAuthError}
       />
     </div>
   );
