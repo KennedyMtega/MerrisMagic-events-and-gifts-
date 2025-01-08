@@ -3,13 +3,13 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError, AuthApiError } from '@supabase/supabase-js';
 
 export const AuthSection = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         setError(null);
       }
@@ -21,14 +21,48 @@ export const AuthSection = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Handle auth state changes and errors
+  // Enhanced error handling function
   const handleAuthError = (err: AuthError) => {
-    if (err.message.includes('Invalid login credentials')) {
-      setError('Invalid email or password. Please try again.');
-    } else if (err.message.includes('Email not confirmed')) {
-      setError('Please verify your email address before signing in.');
+    if (err instanceof AuthApiError) {
+      switch (err.status) {
+        case 400:
+          if (err.message.includes('Email not confirmed')) {
+            setError('Please verify your email address before signing in.');
+          } else if (err.message.includes('Invalid login credentials')) {
+            // Check if the email exists first
+            checkEmailExists(err);
+          } else {
+            setError(err.message);
+          }
+          break;
+        case 422:
+          setError('Invalid email format. Please check your email address.');
+          break;
+        default:
+          setError('An error occurred during authentication. Please try again.');
+      }
     } else {
       setError(err.message);
+    }
+  };
+
+  // Helper function to check if email exists
+  const checkEmailExists = async (originalError: AuthError) => {
+    try {
+      // We'll use a sign-in attempt to check if the email exists
+      const { error: signInError } = await supabase.auth.signInWithOtp({
+        email: (document.querySelector('input[type="email"]') as HTMLInputElement)?.value || '',
+      });
+      
+      if (signInError) {
+        if (signInError.message.includes('Email not found')) {
+          setError('This email is not registered. Please sign up first.');
+        } else {
+          setError('Invalid password. Please try again.');
+        }
+      }
+    } catch {
+      setError('Invalid password. Please try again.');
     }
   };
 
