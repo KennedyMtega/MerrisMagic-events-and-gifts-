@@ -39,6 +39,92 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          name: string
+          price: number
+          type: Database["public"]["Enums"]["gift_type"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          name: string
+          price: number
+          type: Database["public"]["Enums"]["gift_type"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string
+          price?: number
+          type?: Database["public"]["Enums"]["gift_type"]
+        }
+        Relationships: []
+      }
+      gifts: {
+        Row: {
+          amount: number | null
+          claim_code: string | null
+          created_at: string
+          id: string
+          message: string | null
+          metadata: Json | null
+          recipient_id: string | null
+          recipient_phone: string
+          sender_id: string | null
+          status: string
+          template_id: string | null
+          type: Database["public"]["Enums"]["gift_type"]
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          claim_code?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          recipient_id?: string | null
+          recipient_phone: string
+          sender_id?: string | null
+          status?: string
+          template_id?: string | null
+          type: Database["public"]["Enums"]["gift_type"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          claim_code?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          recipient_id?: string | null
+          recipient_phone?: string
+          sender_id?: string | null
+          status?: string
+          template_id?: string | null
+          type?: Database["public"]["Enums"]["gift_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gifts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "gift_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -130,6 +216,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      gift_type: "video" | "card" | "charm" | "voucher"
       relationship_type: "friend" | "family" | "partner" | "colleague" | "other"
     }
     CompositeTypes: {

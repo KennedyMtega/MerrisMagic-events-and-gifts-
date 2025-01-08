@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Steps } from "@/components/ui/steps";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { RecipientStep } from './steps/RecipientStep';
+import { RelationshipStep } from './steps/RelationshipStep';
+import { MessageStep } from './steps/MessageStep';
+import { VoiceStep } from './steps/VoiceStep';
+import { PreviewStep } from './steps/PreviewStep';
+import { PaymentStep } from './steps/PaymentStep';
 
 type Step = 'recipient' | 'relationship' | 'message' | 'voice' | 'preview' | 'payment';
 
@@ -17,86 +22,50 @@ const VideoGiftFlow = () => {
     relationship: '',
     message: '',
     useAIVoice: false,
-    voiceRecording: null as File | null,
+    voiceRecording: null as string | null,
+    theme: 'romantic'
   });
 
-  const handleNext = () => {
-    switch (currentStep) {
-      case 'recipient':
-        if (!formData.phoneNumber) {
-          toast({
-            title: "Required Field",
-            description: "Please enter recipient's phone number",
-            variant: "destructive",
-          });
-          return;
-        }
-        setCurrentStep('relationship');
-        break;
-      case 'relationship':
-        if (!formData.relationship) {
-          toast({
-            title: "Required Field",
-            description: "Please specify your relationship",
-            variant: "destructive",
-          });
-          return;
-        }
-        setCurrentStep('message');
-        break;
-      case 'message':
-        if (!formData.message) {
-          toast({
-            title: "Required Field",
-            description: "Please write or generate a message",
-            variant: "destructive",
-          });
-          return;
-        }
-        setCurrentStep('voice');
-        break;
-      case 'voice':
-        if (!formData.useAIVoice && !formData.voiceRecording) {
-          toast({
-            title: "Required Field",
-            description: "Please record your voice or choose AI voice",
-            variant: "destructive",
-          });
-          return;
-        }
-        setCurrentStep('preview');
-        break;
-      case 'preview':
-        setCurrentStep('payment');
-        break;
-      case 'payment':
-        // Handle payment completion
-        toast({
-          title: "Success!",
-          description: "Your video gift has been sent!",
-        });
-        navigate('/dashboard');
-        break;
-    }
-  };
+  const steps = [
+    "Recipient Details",
+    "Relationship",
+    "Message",
+    "Voice",
+    "Preview",
+    "Payment"
+  ];
 
-  const handleBack = () => {
-    switch (currentStep) {
-      case 'relationship':
-        setCurrentStep('recipient');
-        break;
-      case 'message':
-        setCurrentStep('relationship');
-        break;
-      case 'voice':
-        setCurrentStep('message');
-        break;
-      case 'preview':
-        setCurrentStep('voice');
-        break;
-      case 'payment':
-        setCurrentStep('preview');
-        break;
+  const handleComplete = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase.from('gifts').insert({
+        sender_id: user.id,
+        recipient_phone: formData.phoneNumber,
+        type: 'video',
+        message: formData.message,
+        metadata: {
+          relationship: formData.relationship,
+          voice_recording: formData.voiceRecording,
+          theme: formData.theme,
+          use_ai_voice: formData.useAIVoice
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your video gift has been sent!",
+      });
+      navigate('/dashboard');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send gift. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -104,116 +73,70 @@ const VideoGiftFlow = () => {
     switch (currentStep) {
       case 'recipient':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Enter Recipient's Details</h2>
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input
-                id="phoneNumber"
-                type="tel"
-                placeholder="Enter phone number"
-                value={formData.phoneNumber}
-                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-              />
-            </div>
-          </div>
+          <RecipientStep
+            phoneNumber={formData.phoneNumber}
+            setPhoneNumber={(value) => setFormData({ ...formData, phoneNumber: value })}
+          />
         );
       case 'relationship':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Share Your Relationship</h2>
-            <div className="space-y-2">
-              <Label htmlFor="relationship">How do you know them?</Label>
-              <Input
-                id="relationship"
-                placeholder="e.g., Best friend, Sister, Colleague"
-                value={formData.relationship}
-                onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-              />
-            </div>
-          </div>
+          <RelationshipStep
+            relationship={formData.relationship}
+            setRelationship={(value) => setFormData({ ...formData, relationship: value })}
+          />
         );
       case 'message':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Write Your Message</h2>
-            <div className="space-y-2">
-              <Label htmlFor="message">Your Message</Label>
-              <Textarea
-                id="message"
-                placeholder="Write your heartfelt message..."
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              />
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  toast({
-                    title: "AI Message Generation",
-                    description: "This feature will be implemented soon!",
-                  });
-                }}
-              >
-                Generate with AI
-              </Button>
-            </div>
-          </div>
+          <MessageStep
+            message={formData.message}
+            setMessage={(value) => setFormData({ ...formData, message: value })}
+            relationship={formData.relationship}
+          />
         );
       case 'voice':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Add Your Voice</h2>
-            <div className="space-y-4">
-              <Button
-                variant="outline"
-                onClick={() => setFormData({ ...formData, useAIVoice: true })}
-                className={formData.useAIVoice ? "ring-2 ring-primary" : ""}
-              >
-                Use AI Voice
-              </Button>
-              <div className="text-center">or</div>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  toast({
-                    title: "Voice Recording",
-                    description: "This feature will be implemented soon!",
-                  });
-                }}
-              >
-                Record Your Voice
-              </Button>
-            </div>
-          </div>
+          <VoiceStep
+            voiceRecording={formData.voiceRecording}
+            setVoiceRecording={(value) => setFormData({ ...formData, voiceRecording: value })}
+            useAIVoice={formData.useAIVoice}
+            setUseAIVoice={(value) => setFormData({ ...formData, useAIVoice: value })}
+            message={formData.message}
+          />
         );
       case 'preview':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Preview Your Gift</h2>
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <p>Preview will be implemented soon!</p>
-            </div>
-          </div>
+          <PreviewStep
+            message={formData.message}
+            voiceRecording={formData.voiceRecording}
+            theme={formData.theme}
+            setTheme={(value) => setFormData({ ...formData, theme: value })}
+          />
         );
       case 'payment':
         return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gift">Complete Payment</h2>
-            <div className="space-y-4">
-              <Button className="w-full" onClick={() => {
-                toast({
-                  title: "Card Payment",
-                  description: "Payment processing will be implemented soon!",
-                });
-              }}>
-                Pay with Card ($10)
-              </Button>
-              <Button variant="outline" className="w-full opacity-50 cursor-not-allowed">
-                Pay with Wallet (Coming Soon)
-              </Button>
-            </div>
-          </div>
+          <PaymentStep
+            onComplete={handleComplete}
+            amount={10}
+          />
         );
+      default:
+        return null;
+    }
+  };
+
+  const handleNext = () => {
+    const stepOrder: Step[] = ['recipient', 'relationship', 'message', 'voice', 'preview', 'payment'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    if (currentIndex < stepOrder.length - 1) {
+      setCurrentStep(stepOrder[currentIndex + 1]);
+    }
+  };
+
+  const handleBack = () => {
+    const stepOrder: Step[] = ['recipient', 'relationship', 'message', 'voice', 'preview', 'payment'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    if (currentIndex > 0) {
+      setCurrentStep(stepOrder[currentIndex - 1]);
     }
   };
 
@@ -221,6 +144,7 @@ const VideoGiftFlow = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12">
       <div className="container max-w-md mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+          <Steps currentStep={steps.indexOf(currentStep) + 1} steps={steps} className="mb-8" />
           {renderStep()}
           <div className="flex justify-between pt-4">
             {currentStep !== 'recipient' && (
@@ -230,7 +154,7 @@ const VideoGiftFlow = () => {
             )}
             <Button 
               className={currentStep === 'recipient' ? 'w-full' : 'ml-auto'}
-              onClick={handleNext}
+              onClick={currentStep === 'payment' ? handleComplete : handleNext}
             >
               {currentStep === 'payment' ? 'Complete' : 'Next'}
             </Button>
