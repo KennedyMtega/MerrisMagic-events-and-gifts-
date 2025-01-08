@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Session } from "@supabase/supabase-js";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
+import VideoGift from "./pages/VideoGift";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gift/video"
+            element={
+              <ProtectedRoute>
+                <VideoGift />
               </ProtectedRoute>
             }
           />
