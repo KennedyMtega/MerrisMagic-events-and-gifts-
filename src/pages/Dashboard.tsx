@@ -47,27 +47,13 @@ const Dashboard = () => {
   ];
 
   const handleGiftSelect = (type: string) => {
-    toast({
-      title: "Gift Flow Started!",
-      description: `Follow these steps to send your ${type}:
-        ${getGiftSteps(type)}`,
-    });
-  };
-
-  const getGiftSteps = (type: string) => {
-    const commonSteps = "1. Enter recipient's phone number\n2. Share your relationship\n3. Write your message";
-    
-    switch(type) {
-      case 'video':
-        return `${commonSteps}\n4. Record your voice or use AI voice\n5. Preview and customize\n6. Complete payment`;
-      case 'card':
-        return `${commonSteps}\n4. Choose card theme\n5. Preview AI design\n6. Complete payment`;
-      case 'charm':
-        return `${commonSteps}\n4. Select meaningful charms\n5. Arrange your design\n6. Complete payment`;
-      case 'voucher':
-        return `${commonSteps}\n4. Enter custom amount (min $20)\n5. Add special note\n6. Complete payment`;
-      default:
-        return commonSteps;
+    if (type === 'video') {
+      navigate('/gift/video/create');
+    } else {
+      toast({
+        title: "Coming Soon!",
+        description: "This gift type will be available soon.",
+      });
     }
   };
 
