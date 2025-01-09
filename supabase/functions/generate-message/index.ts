@@ -38,6 +38,11 @@ serve(async (req) => {
 
     const data = await response.json()
     console.log('OpenAI response:', data)
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response from OpenAI')
+    }
+
     const message = data.choices[0].message.content
 
     return new Response(

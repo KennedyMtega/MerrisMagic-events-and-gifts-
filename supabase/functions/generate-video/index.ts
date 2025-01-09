@@ -23,13 +23,17 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         prompt: `Create a beautiful video with text animation for the message: ${message}`,
-        theme: theme,
+        style: theme,
         audio: voiceRecording,
       }),
     })
 
     const data = await response.json()
     console.log('Runway ML response:', data)
+
+    if (!data.output || !data.output.url) {
+      throw new Error('Invalid response from Runway ML')
+    }
     
     return new Response(
       JSON.stringify({ videoUrl: data.output.url }),
