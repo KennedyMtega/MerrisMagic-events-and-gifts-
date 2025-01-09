@@ -46,13 +46,25 @@ serve(async (req) => {
           }
         ],
         temperature: 0.7,
-        max_tokens: 200
+        max_tokens: 150
       }),
     })
 
     if (!response.ok) {
       const errorData = await response.text()
       console.error('OpenAI API error:', errorData)
+      
+      // Check for quota exceeded error
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'AI service is currently unavailable. Please try writing your own message.' }),
+          { 
+            status: 503,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        )
+      }
+      
       throw new Error(`OpenAI API error: ${response.status} ${errorData}`)
     }
 
@@ -70,8 +82,14 @@ serve(async (req) => {
     )
   } catch (error) {
     console.error('Error in generate-message function:', error)
+    
+    // Provide a more user-friendly error message
+    const errorMessage = error.message.includes('insufficient_quota')
+      ? 'AI service is currently unavailable. Please try writing your own message.'
+      : 'Failed to generate message. Please try again.'
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
