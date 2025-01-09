@@ -15,6 +15,10 @@ serve(async (req) => {
     const { relationship } = await req.json()
     console.log('Generating message for relationship:', relationship)
 
+    if (!relationship) {
+      throw new Error('Relationship is required')
+    }
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -39,14 +43,12 @@ serve(async (req) => {
     const data = await response.json()
     console.log('OpenAI response:', data)
 
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    if (!data.choices?.[0]?.message?.content) {
       throw new Error('Invalid response from OpenAI')
     }
 
-    const message = data.choices[0].message.content
-
     return new Response(
-      JSON.stringify({ message }),
+      JSON.stringify({ message: data.choices[0].message.content }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
