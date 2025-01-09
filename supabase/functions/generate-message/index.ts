@@ -7,8 +7,9 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
@@ -19,18 +20,24 @@ serve(async (req) => {
       throw new Error('Relationship is required')
     }
 
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured')
+    }
+
+    console.log('Making request to OpenAI API...')
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that generates heartfelt messages for different types of relationships.'
+            content: 'You are a helpful assistant that generates heartfelt messages for different types of relationships. Keep messages under 100 words and make them personal and emotional.'
           },
           {
             role: 'user',
@@ -40,11 +47,18 @@ serve(async (req) => {
       }),
     })
 
+    if (!response.ok) {
+      const errorData = await response.text()
+      console.error('OpenAI API error:', errorData)
+      throw new Error(`OpenAI API error: ${response.status} ${errorData}`)
+    }
+
     const data = await response.json()
     console.log('OpenAI response:', data)
 
     if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Invalid response from OpenAI')
+      console.error('Invalid OpenAI response structure:', data)
+      throw new Error('Invalid response structure from OpenAI')
     }
 
     return new Response(
