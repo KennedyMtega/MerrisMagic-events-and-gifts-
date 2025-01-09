@@ -13,6 +13,7 @@ serve(async (req) => {
 
   try {
     const { message } = await req.json()
+    console.log('Generating voice for message:', message)
 
     const response = await fetch('https://api.resemble.ai/v2/clips', {
       method: 'POST',
@@ -22,18 +23,20 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         text: message,
-        voice_uuid: 'your-voice-uuid', // You'll need to create a voice in Resemble AI
+        voice_uuid: 'default', // You'll need to create a voice in Resemble AI
         output_format: 'mp3',
       }),
     })
 
     const data = await response.json()
+    console.log('Resemble AI response:', data)
     
     return new Response(
       JSON.stringify({ audioUrl: data.url }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('Error generating voice:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

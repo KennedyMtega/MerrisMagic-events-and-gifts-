@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PreviewStepProps {
   message: string;
@@ -20,21 +21,24 @@ export const PreviewStep = ({ message, voiceRecording, theme, setTheme }: Previe
   const generatePreview = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/generate-video', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+      const { data, error } = await supabase.functions.invoke('generate-video', {
+        body: { 
           message,
           voiceRecording,
           theme 
-        }),
+        }
       });
       
-      const data = await response.json();
+      if (error) throw error;
       if (data.videoUrl) {
         setPreviewUrl(data.videoUrl);
+        toast({
+          title: "Preview Generated",
+          description: "Your video preview is ready!",
+        });
       }
     } catch (error) {
+      console.error('Error generating preview:', error);
       toast({
         title: "Error",
         description: "Failed to generate preview. Please try again.",
@@ -46,7 +50,9 @@ export const PreviewStep = ({ message, voiceRecording, theme, setTheme }: Previe
   };
 
   React.useEffect(() => {
-    generatePreview();
+    if (message && theme) {
+      generatePreview();
+    }
   }, [theme]);
 
   return (

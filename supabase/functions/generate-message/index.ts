@@ -13,6 +13,7 @@ serve(async (req) => {
 
   try {
     const { relationship } = await req.json()
+    console.log('Generating message for relationship:', relationship)
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -21,7 +22,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
@@ -36,6 +37,7 @@ serve(async (req) => {
     })
 
     const data = await response.json()
+    console.log('OpenAI response:', data)
     const message = data.choices[0].message.content
 
     return new Response(
@@ -43,6 +45,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('Error generating message:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }

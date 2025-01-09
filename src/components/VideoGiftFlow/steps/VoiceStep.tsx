@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Mic, Speaker, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VoiceStepProps {
   voiceRecording: string | null;
@@ -36,6 +37,11 @@ export const VoiceStep = ({
         reader.onloadend = () => {
           if (typeof reader.result === 'string') {
             setVoiceRecording(reader.result);
+            setUseAIVoice(false);
+            toast({
+              title: "Recording Saved",
+              description: "Your voice recording has been saved successfully.",
+            });
           }
         };
         reader.readAsDataURL(blob);
@@ -43,7 +49,12 @@ export const VoiceStep = ({
 
       mediaRecorder.current.start();
       setIsRecording(true);
+      toast({
+        title: "Recording Started",
+        description: "Speak clearly into your microphone.",
+      });
     } catch (error) {
+      console.error('Error accessing microphone:', error);
       toast({
         title: "Error",
         description: "Could not access microphone. Please check your permissions.",
@@ -63,18 +74,21 @@ export const VoiceStep = ({
   const generateAIVoice = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/generate-voice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+      const { data, error } = await supabase.functions.invoke('generate-voice', {
+        body: { message }
       });
       
-      const data = await response.json();
+      if (error) throw error;
       if (data.audioUrl) {
         setVoiceRecording(data.audioUrl);
         setUseAIVoice(true);
+        toast({
+          title: "Voice Generated",
+          description: "AI voice has been generated successfully.",
+        });
       }
     } catch (error) {
+      console.error('Error generating AI voice:', error);
       toast({
         title: "Error",
         description: "Failed to generate AI voice. Please try again.",
@@ -92,7 +106,7 @@ export const VoiceStep = ({
         <Button
           variant="outline"
           onClick={generateAIVoice}
-          disabled={isGenerating}
+          disabled={isGenerating || !message}
           className={`w-full h-24 ${useAIVoice ? "ring-2 ring-primary" : ""}`}
         >
           {isGenerating ? (
@@ -111,6 +125,7 @@ export const VoiceStep = ({
         <Button
           variant="outline"
           onClick={isRecording ? stopRecording : startRecording}
+          disabled={isGenerating}
           className={`w-full h-24 ${!useAIVoice && voiceRecording ? "ring-2 ring-primary" : ""}`}
         >
           <Mic className={`mr-2 h-6 w-6 ${isRecording ? "animate-pulse" : ""}`} />

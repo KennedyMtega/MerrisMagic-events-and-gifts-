@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MessageStepProps {
   message: string;
@@ -18,17 +19,20 @@ export const MessageStep = ({ message, setMessage, relationship }: MessageStepPr
   const generateMessage = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('/api/generate-message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ relationship }),
+      const { data, error } = await supabase.functions.invoke('generate-message', {
+        body: { relationship }
       });
       
-      const data = await response.json();
+      if (error) throw error;
       if (data.message) {
         setMessage(data.message);
+        toast({
+          title: "Message Generated",
+          description: "AI has created a heartfelt message for you. Feel free to edit it!",
+        });
       }
     } catch (error) {
+      console.error('Error generating message:', error);
       toast({
         title: "Error",
         description: "Failed to generate message. Please try again.",

@@ -13,8 +13,8 @@ serve(async (req) => {
 
   try {
     const { message, voiceRecording, theme } = await req.json()
+    console.log('Generating video with:', { message, theme })
 
-    // First, generate the video using Runway ML
     const response = await fetch('https://api.runwayml.com/v1/generate', {
       method: 'POST',
       headers: {
@@ -24,16 +24,19 @@ serve(async (req) => {
       body: JSON.stringify({
         prompt: `Create a beautiful video with text animation for the message: ${message}`,
         theme: theme,
+        audio: voiceRecording,
       }),
     })
 
     const data = await response.json()
+    console.log('Runway ML response:', data)
     
     return new Response(
       JSON.stringify({ videoUrl: data.output.url }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    console.error('Error generating video:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
