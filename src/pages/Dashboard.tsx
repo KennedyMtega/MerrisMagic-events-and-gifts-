@@ -2,16 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import GiftCard from '@/components/GiftCard';
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { Wallet, Gift, Settings, Sun, Moon } from "lucide-react";
+import { GiftsSection } from '@/components/dashboard/GiftsSection';
+import { WalletSection } from '@/components/dashboard/WalletSection';
+import { SettingsSection } from '@/components/dashboard/SettingsSection';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
 
   // Fetch user profile
@@ -67,44 +66,6 @@ const Dashboard = () => {
     },
   });
 
-  const giftTypes = [
-    {
-      type: 'video',
-      title: 'Heartfelt Video',
-      description: 'Create a personalized video message with AI-suggested script and your voice recording',
-      price: 10
-    },
-    {
-      type: 'card',
-      title: 'Magic Card',
-      description: 'Send an AI-designed digital card that captures your unique relationship',
-      price: 5
-    },
-    {
-      type: 'charm',
-      title: 'Enchanted Charms',
-      description: 'Share meaningful digital charms that symbolize your special bond',
-      price: 5
-    },
-    {
-      type: 'voucher',
-      title: 'Magic Voucher',
-      description: 'Send a custom amount gift voucher that brings joy to your loved ones',
-      price: null
-    }
-  ];
-
-  const handleGiftSelect = (type: string) => {
-    if (type === 'video') {
-      navigate('/gift/video/create');
-    } else {
-      toast({
-        title: "Coming Soon!",
-        description: "This gift type will be available soon.",
-      });
-    }
-  };
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
@@ -157,107 +118,20 @@ const Dashboard = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="gifts" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {giftTypes.map((gift) => (
-                <GiftCard
-                  key={gift.type}
-                  type={gift.type as any}
-                  title={gift.title}
-                  description={gift.description}
-                  price={gift.price}
-                  onClick={() => handleGiftSelect(gift.type)}
-                />
-              ))}
-            </div>
-
-            {sentGifts && sentGifts.length > 0 && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-semibold">Sent Gifts</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {sentGifts.map((gift) => (
-                    <Card key={gift.id} className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-semibold capitalize">{gift.type} Gift</p>
-                          <p className="text-sm text-gray-500">Sent to: {gift.recipient_phone}</p>
-                          <p className="text-sm text-gray-500">Status: {gift.status}</p>
-                        </div>
-                        {gift.amount && (
-                          <p className="font-semibold">${gift.amount}</p>
-                        )}
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+          <TabsContent value="gifts">
+            <GiftsSection sentGifts={sentGifts} />
           </TabsContent>
 
-          <TabsContent value="wallet" className="space-y-8">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold mb-4">Your Wallet</h2>
-              <p className="text-4xl font-bold mb-6">${wallet?.balance || '0.00'}</p>
-              <Button className="w-full">Add Funds</Button>
-            </Card>
-
-            {transactions && transactions.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Recent Transactions</h3>
-                <div className="space-y-2">
-                  {transactions.map((tx) => (
-                    <Card key={tx.id} className="p-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="font-semibold">{tx.description || tx.transaction_type}</p>
-                          <p className="text-sm text-gray-500">
-                            {new Date(tx.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <p className={`font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {tx.amount > 0 ? '+' : ''}{tx.amount}
-                        </p>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+          <TabsContent value="wallet">
+            <WalletSection wallet={wallet} transactions={transactions} />
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-6">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold mb-6">Settings</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Email Notifications</p>
-                    <p className="text-sm text-gray-500">Receive gift updates via email</p>
-                  </div>
-                  <Button variant="outline">
-                    {profile?.email_notifications ? 'Disable' : 'Enable'}
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">SMS Notifications</p>
-                    <p className="text-sm text-gray-500">Receive gift updates via SMS</p>
-                  </div>
-                  <Button variant="outline">
-                    {profile?.sms_notifications ? 'Disable' : 'Enable'}
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Theme</p>
-                    <p className="text-sm text-gray-500">Choose your preferred theme</p>
-                  </div>
-                  <Button variant="outline" onClick={toggleTheme}>
-                    {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                  </Button>
-                </div>
-              </div>
-            </Card>
+          <TabsContent value="settings">
+            <SettingsSection 
+              profile={profile}
+              theme={theme}
+              toggleTheme={toggleTheme}
+            />
           </TabsContent>
         </Tabs>
       </div>
