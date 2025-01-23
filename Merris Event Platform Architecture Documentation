@@ -1,0 +1,214 @@
+# Merris Event Platform Architecture Documentation  
+**Version 1.0 | Aligned with Core Business Goals**  
+
+---
+
+## Table of Contents  
+1. [Platform Vision](#platform-vision)  
+2. [User Roles & Workflows](#user-roles--workflows)  
+3. [Core Functional Architecture](#core-functional-architecture)  
+4. [Platform Sections (50+ Components)](#platform-sections)  
+5. [Technical Stack & Integrations](#technical-stack--integrations)  
+6. [Advanced Features](#advanced-features)  
+7. [Security & Compliance](#security--compliance)  
+8. [Scalability Roadmap](#scalability-roadmap)  
+
+---
+
+## Platform Vision  
+Merris Event is a **Tanzanian-centric SaaS platform** specializing in **event planning**, **decor services**, and **curated gifting**, acting as a bridge between clients and verified vendors.  
+
+**Core Objectives**:  
+1. Simplify event planning through AI-powered vendor matchmaking.  
+2. Offer culturally tailored decor and gift packages.  
+3. Empower local vendors with digital tools to showcase services.  
+
+---
+
+## User Roles & Workflows  
+
+### 1. Clients  
+- **Key Actions**:  
+  - Plan events (weddings, birthdays, corporate).  
+  - Customize decor themes and gift packages.  
+  - Book/pay vendors through the platform.  
+
+### 2. Vendors  
+- **Categories**:  
+  - Decorators | Caterers | Florists | Venues | Gift Artisans  
+- **Key Actions**:  
+  - Showcase portfolios/pricing.  
+  - Manage bookings and promotions.  
+  - Collaborate with other vendors for bundled offers.  
+
+### 3. Administrators  
+- **Key Actions**:  
+  - Verify vendor licenses/quality.  
+  - Resolve booking disputes.  
+  - Monitor platform analytics.  
+
+---
+
+## Core Functional Architecture  
+![Merris Event Workflow](https://via.placeholder.com/800x400?text=Event+Planning+and+Gifting+Workflow)  
+
+### Three Pillars:  
+1. **Event Planning Suite**  
+   - Venue booking, decor design, vendor coordination.  
+2. **Gift Marketplace**  
+   - Pre-built and custom gift boxes (simple to luxury tiers).  
+3. **Vendor Ecosystem**  
+   - Directory, collaboration tools, and performance analytics.  
+
+---
+
+## Platform Sections  
+
+### Public-Facing Components (15+ Pages)  
+1. **Homepage**  
+   - Hero: "Plan Your Dream Event in 3 Clicks"  
+   - Trending: "Most-Booked Wedding Decorators in Dar es Salaam"  
+   - CTA: Start Planning | Explore Gifts  
+
+2. **Event Types Hub**  
+   - Sub-pages:  
+     - Weddings  
+     - Corporate Events  
+     - Birthdays  
+     - Cultural Ceremonies (e.g., *Makonde Initiation*)  
+
+3. **Vendor Directory**  
+   - Filters: Price, rating, specialties (e.g., "Outdoor Weddings").  
+   - Vendor Card Components:  
+     - Portfolio Gallery  
+     - Service Menu (+ Add-ons)  
+     - Live Availability Calendar  
+
+4. **Gift Studio**  
+   - Build gift boxes:  
+     - Step 1: Occasion (Wedding, Graduation, etc.)  
+     - Step 2: Budget (Simple/Luxury)  
+     - Step 3: Personalize (Message, Wrapping)  
+
+### Client Portal (10+ Pages)  
+5. **Event Dashboard**  
+   - Timeline view with vendor tasks (e.g., "Florist Confirmation Due Tomorrow").  
+   - Budget Tracker (Actual vs. Planned Spend).  
+
+6. **Design Studio**  
+   - AR decor preview: Visualize table settings/venue layouts.  
+   - Save/Pin inspirations (e.g., "Zanzibar Beach Wedding Mood Board").  
+
+7. **Gift Management**  
+   - Auto-reminders for recurring gifts (e.g., annual anniversaries).  
+   - Bulk ordering for corporate clients.  
+
+### Vendor Portal (15+ Pages)  
+8. **Service Profile Builder**  
+   - Sub-pages:  
+     - Portfolio Upload (High-res images/videos)  
+     - Pricing Tiers (Basic/Premium packages)  
+     - Collaboration Network (e.g., "Partner with Caterers")  
+
+9. **Booking Manager**  
+   - Real-time inquiries/requests.  
+   - Auto-decline conflicts (e.g., double-booking).  
+
+10. **Promotions Engine**  
+    - Create seasonal offers (e.g., "Rainy Season Discount: 20% Off Tents").  
+    - Track ROI from platform-driven leads.  
+
+### Admin Portal (10+ Pages)  
+11. **Vendor Onboarding**  
+    - Document verification (business license, tax compliance).  
+    - Quality audit checklist (e.g., site visits for premium vendors).  
+
+12. **Dispute Resolution**  
+    - Escrow payment handling.  
+    - Case management system.  
+
+13. **Cultural Compliance**  
+    - Flag culturally insensitive decor/gift ideas.  
+    - Curate approved themes (e.g., "Swahili Coastal Weddings").  
+
+---
+
+## Technical Stack & Integrations  
+
+### Frontend  
+- **Framework**: React.js + Next.js (SSR for SEO)  
+- **UI Library**: Chakra UI + Custom Swahili-themed components  
+- **Mobile**: Flutter (iOS/Android)  
+
+### Backend  
+- **Core**: Node.js + Express.js  
+- **Database**:  
+  - PostgreSQL (Transactions)  
+  - MongoDB (Vendor portfolios, user-generated content)  
+- **Search**: Elasticsearch (Vendor/event filtering)  
+
+### Integrations  
+- **Payments**: M-Pesa, Tigo Pesa, Stripe  
+- **Maps**: Google Maps (Venue geotagging)  
+- **SMS/Email**: Africa’s Talking, SendGrid  
+- **AR**: Amazon Sumerian (3D decor previews)  
+
+---
+
+## Advanced Features  
+
+### For Clients  
+- **AI Mood Matcher**:  
+  - Upload inspiration photos → get decor/gift recommendations.  
+- **Guest Management**:  
+  - RSVP tracker + digital invitations (Swahili/English).  
+
+### For Vendors  
+- **Smart Pricing Tool**:  
+  - Compare rates with competitors in real-time.  
+- **Collaboration Hub**:  
+  - Joint proposals (e.g., Florist + Caterer bundles).  
+
+### For Admins  
+- **Cultural Sensitivity AI**:  
+  - Scan vendor portfolios for inappropriate cultural appropriation.  
+- **Vendor Performance Score**:  
+  - Algorithmic ranking (reviews, completion rate, response time).  
+
+---
+
+## Security & Compliance  
+
+### Data Protection  
+- **Encryption**: AES-256 for user/vendor data.  
+- **Backups**: Daily to AWS S3 with versioning.  
+
+### Legal  
+- **Terms**: Escrow terms for vendor payments.  
+- **Local Laws**: Adherence to TCRA (Tanzania) and BRELA regulations.  
+
+---
+
+## Scalability Roadmap  
+
+### Phase 1 (2025)  
+- **AI Vendor Match Pro**:  
+  - "Find a decorator who matches your budget and style."  
+- **Subscription Gifts**:  
+  - Monthly curated gift boxes (e.g., "Tanzanian Artisan Series").  
+
+### Phase 2 (2026)  
+- **Regional Expansion**:  
+  - Kenya/Uganda localization (local payment methods, Swahili dialects).  
+- **IoT Integration**:  
+  - Smart inventory tracking for vendors (e.g., flower stock sensors).  
+
+### Phase 3 (2027)  
+- **Blockchain Verification**:  
+  - Immutable vendor reviews and transaction history.  
+- **Metaverse Showrooms**:  
+  - Virtual decor previews in VR environments.  
+
+---
+
+**Documentation End**  
