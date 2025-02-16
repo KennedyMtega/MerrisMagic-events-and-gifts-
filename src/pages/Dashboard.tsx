@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,14 +31,14 @@ const Dashboard = () => {
     },
   });
 
-  // Fetch wallet
+  // Fetch wallet with maybeSingle() to handle no results case
   const { data: wallet } = useQuery({
     queryKey: ['wallet'],
     queryFn: async () => {
       const { data } = await supabase
         .from('wallets')
         .select('*')
-        .single();
+        .maybeSingle();
       return data;
     },
   });
