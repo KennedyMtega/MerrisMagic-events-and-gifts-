@@ -2,9 +2,6 @@
 
 ## Project info
 
-<--**URL**: https://lovable.dev/projects/e30c9098-a073-44c4-8bd6-aea6e5b94d01
--->
-
 **Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
