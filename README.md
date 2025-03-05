@@ -1,18 +1,9 @@
-# Welcome to your Lovable project
+# Welcome to My project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/e30c9098-a073-44c4-8bd6-aea6e5b94d01
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/e30c9098-a073-44c4-8bd6-aea6e5b94d01) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+<--**URL**: https://lovable.dev/projects/e30c9098-a073-44c4-8bd6-aea6e5b94d01
+-->
 
 **Use your preferred IDE**
 
@@ -24,7 +15,7 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone <THIS_GIT_URL>
 
 # Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
@@ -38,7 +29,7 @@ npm run dev
 
 **Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
+- Navigate to the desired file(s).(THIS IS FOR ME THOUGH 😉)
 - Click the "Edit" button (pencil icon) at the top right of the file view.
 - Make your changes and commit the changes.
 
@@ -62,8 +53,4 @@ This project is built with .
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/e30c9098-a073-44c4-8bd6-aea6e5b94d01) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+?!?!?!?!?!?!🤔
